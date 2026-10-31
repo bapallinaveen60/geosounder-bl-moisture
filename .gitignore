@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.env
+.venv
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Data stores (Never commit large raw/processed satellite or radar data)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/collocated/*
+!data/collocated/.gitkeep
+*.h5
+*.hdf5
+*.nc
+*.nc4
+*.zarr
+*.grib
+*.grib2
+*.tif
+*.tiff
+
+# Model Checkpoints and Logs
+checkpoints/*
+!checkpoints/.gitkeep
+experiments/
+logs/
+runs/
+wandb/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Outputs and Figures
+outputs/*
+!outputs/.gitkeep
+figures/*
+!figures/.gitkeep
+
+# IDEs and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

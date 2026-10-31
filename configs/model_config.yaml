@@ -1,0 +1,35 @@
+# Model Architecture Configuration for ThermoBL-Net
+model:
+  name: "ThermoBL-Net"
+  input_channels: 26
+  output_levels: 5           # 1000, 950, 925, 850, 700 hPa
+  temporal_sequence_length: 4 # K=4 hours
+  spatial_tile_size: [128, 128]
+
+encoder:
+  feature_extractor_type: "3d_conv"
+  conv3d_channels: [64, 128]
+  kernel_size_3d: [3, 3, 3]
+  padding_mode: "circular"   # Circular / replicate padding for boundary continuity
+  norm_type: "group_norm"
+  num_groups: 8
+
+convlstm_backbone:
+  hidden_dims: [128, 128, 64]
+  kernel_size: 3
+  num_layers: 3
+  bidirectional: false
+  peephole_connections: true
+  dropout_prob: 0.10
+
+decoder:
+  transposed_conv_channels: [64, 32]
+  activation: "leaky_relu"
+  leaky_relu_slope: 0.1
+  output_activation: "relu"  # Specific humidity q >= 0 g/kg
+
+physics_constraints:
+  enforce_mass_conservation: true
+  enforce_monotonicity: true
+  enforce_moisture_flux_divergence: true
+  upper_troposphere_pwv_channel_indices: [9, 10, 11] # Sounder channels 10-12

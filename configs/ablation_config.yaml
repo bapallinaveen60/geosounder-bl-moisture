@@ -1,0 +1,41 @@
+# Ablation Study Matrix Configuration
+ablation_studies:
+  config_1_sounder_only:
+    description: "Sounder radiances only (no GNSS mass constraint, no physics losses)"
+    input_channels_subset: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18] # 18 IR + 1 Vis
+    loss_weights:
+      lambda_profile: 1.0
+      lambda_column: 0.0
+      lambda_monotonic: 0.0
+      lambda_conv: 0.0
+    output_dir: "checkpoints/ablation_1_sounder_only"
+
+  config_2_sounder_gnss:
+    description: "Sounder + GNSS PWV (pure data-driven, without physics loss penalties)"
+    input_channels_subset: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22] # + GNSS map
+    loss_weights:
+      lambda_profile: 1.0
+      lambda_column: 0.0
+      lambda_monotonic: 0.0
+      lambda_conv: 0.0
+    output_dir: "checkpoints/ablation_2_sounder_gnss"
+
+  config_3_sounder_gnss_topo_lst:
+    description: "Sounder + GNSS + Topography DEM + Surface LST (full inputs, but purely data-driven loss)"
+    input_channels_subset: "all"
+    loss_weights:
+      lambda_profile: 1.0
+      lambda_column: 0.0
+      lambda_monotonic: 0.0
+      lambda_conv: 0.0
+    output_dir: "checkpoints/ablation_3_sounder_gnss_topo_lst"
+
+  config_4_full_thermobonet:
+    description: "Full ThermoBL-Net (all inputs + Physics-Informed Composite Loss)"
+    input_channels_subset: "all"
+    loss_weights:
+      lambda_profile: 1.0
+      lambda_column: 1.8
+      lambda_monotonic: 0.5
+      lambda_conv: 0.8
+    output_dir: "checkpoints/ablation_4_full_thermobonet"

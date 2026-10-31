@@ -1,0 +1,43 @@
+# Training & Optimization Configuration for ThermoBL-Net
+training:
+  experiment_name: "ThermoBL_Net_Full_Run"
+  output_dir: "checkpoints/full_model"
+  log_dir: "logs/full_model"
+  seed: 42
+  num_epochs: 120
+  batch_size: 16
+  num_workers: 4
+  mixed_precision: true       # PyTorch AMP (Automatic Mixed Precision fp16/bf16)
+  distributed:
+    enabled: true
+    backend: "nccl"
+  gradient_clipping: 1.0
+
+optimizer:
+  type: "AdamW"
+  lr: 3.0e-4
+  min_lr: 1.0e-6
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+
+scheduler:
+  type: "cosine_annealing_with_warmup"
+  warmup_epochs: 5
+  total_epochs: 120
+
+loss_weights:
+  lambda_profile: 1.0        # Huber radiosonde profile reconstruction loss
+  lambda_column: 1.8         # Invariant GNSS column mass conservation
+  lambda_monotonic: 0.5      # Physical vertical lapse rate constraint
+  lambda_conv: 0.8           # Sobel horizontal moisture flux convergence (MFC)
+
+loss_parameters:
+  huber_delta: 0.5           # Delta for profile Huber loss (g/kg)
+  monotonic_delta_q: 0.2     # Margin allowed before penalizing inversions (g/kg)
+  density_liquid_water: 1000.0  # rho_w in kg/m^3
+  gravity_constant: 9.80665     # g in m/s^2
+
+validation:
+  val_frequency_epochs: 2
+  save_best_metric: "val_total_loss"
+  early_stopping_patience: 15

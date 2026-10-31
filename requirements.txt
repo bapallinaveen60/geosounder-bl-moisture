@@ -1,0 +1,36 @@
+# Core Deep Learning & Scientific Computing
+torch>=2.2.0
+torchvision>=0.17.0
+numpy>=1.24.0
+scipy>=1.11.0
+pandas>=2.1.0
+
+# Geospatial & Atmospheric Data Processing
+xarray>=2023.10.0
+netCDF4>=1.6.5
+h5py>=3.10.0
+zarr>=2.16.0
+pyproj>=3.6.1
+rasterio>=1.3.9
+geopandas>=0.14.0
+shapely>=2.0.2
+cartopy>=0.22.0
+metpy>=1.6.0
+pykrige>=1.7.0
+
+# Configuration & Utilities
+pyyaml>=6.0.1
+tqdm>=4.66.1
+rich>=13.7.0
+click>=8.1.7
+
+# Experiment Tracking & Diagnostics
+matplotlib>=3.8.0
+seaborn>=0.13.0
+tensorboard>=2.15.0
+
+# Testing & Linting
+pytest>=7.4.3
+ruff>=0.1.6
+flake8>=6.1.0
+black>=23.11.0

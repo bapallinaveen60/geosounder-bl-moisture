@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thermobl-net"
+version = "0.1.0"
+description = "Thermodynamic Boundary-Layer Sounder Network for Pre-Monsoon Moisture Accumulation Profiling"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "GeoVision Atmospheric AI Research Team"}
+]
+keywords = [
+    "atmospheric-science",
+    "deep-learning",
+    "insat-3dr",
+    "sounder-retrieval",
+    "boundary-layer-thermodynamics",
+    "gnss-pwv",
+    "convective-initiation",
+    "convlstm"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "torch>=2.2.0",
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
+    "pandas>=2.1.0",
+    "xarray>=2023.10.0",
+    "netCDF4>=1.6.5",
+    "h5py>=3.10.0",
+    "pyproj>=3.6.1",
+    "metpy>=1.6.0",
+    "pyyaml>=6.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "ruff>=0.1.6",
+    "black>=23.11.0",
+    "flake8>=6.1.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I", "N", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+addopts = "-v --strict-markers"

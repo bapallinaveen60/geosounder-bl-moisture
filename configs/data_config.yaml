@@ -1,0 +1,59 @@
+# Data Pipeline Configuration for ThermoBL-Net
+spatial_domain:
+  name: "Eastern_and_Southern_India"
+  lat_min: 12.0
+  lat_max: 28.0
+  lon_min: 75.0
+  lon_max: 92.0
+  grid_resolution_deg: 0.04  # ~4 km resolution
+  grid_height: 400
+  grid_width: 425
+
+vertical_levels:
+  pressure_levels_hpa: [1000, 950, 925, 850, 700]
+  unit: "hPa"
+  target_variable: "specific_humidity"  # q in g/kg
+
+temporal:
+  rolling_window_hours: 4   # K=4 hours (t-3, t-2, t-1, t)
+  sampling_rate_minutes: 60
+  seasons:
+    train: ["MAM_2022", "MAM_2023"]
+    test_holdout: ["MAM_2024"]
+
+channels:
+  total_channels: 26
+  sounder_ir_bands: 18       # LWIR, MWIR, SWIR
+  sounder_vis_band: 1
+  surface_lst: 1             # INSAT Imager L2 LST
+  topography_elevation: 1    # SRTM DEM elevation
+  topography_slope: 1        # SRTM slope
+  surface_pressure: 1        # Surface pressure in hPa
+  gnss_pwv_map: 1            # Voronoi-Kriging interpolated GNSS PWV in mm
+  era5_blh: 1                # Planetary boundary layer height
+  era5_u_wind: 1             # 10m / boundary layer u-wind
+  era5_v_wind: 1             # 10m / boundary layer v-wind
+
+paths:
+  raw:
+    insat_sounder_dir: "data/raw/insat_sounder"
+    insat_imager_dir: "data/raw/insat_imager"
+    gnss_ztd_dir: "data/raw/gnss_ztd"
+    radiosonde_dir: "data/raw/radiosonde"
+    srtm_dem_file: "data/raw/srtm_dem/srtm_india_90m.tif"
+    era5_dir: "data/raw/era5_reanalysis"
+    imd_radar_dir: "data/raw/imd_radar"
+  processed:
+    gridded_zarr_dir: "data/processed/gridded_4km.zarr"
+    collocated_h5_file: "data/collocated/collocated_dataset.h5"
+
+preprocessing:
+  cloud_clearing:
+    tb_10_99_threshold_k: 280.0
+    vis_reflectance_threshold: 0.20
+  radiosonde_collocation:
+    time_window_minutes: 30
+    spatial_radius_deg: 0.05
+  gnss_kriging:
+    variogram_model: "spherical"
+    nlags: 20
