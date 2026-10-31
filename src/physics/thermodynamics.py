@@ -12,7 +12,7 @@ from reconstructed boundary-layer specific humidity and temperature profiles.
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 
@@ -21,8 +21,8 @@ class ThermodynamicIndexDerivator:
     """Computes thermodynamic indices used in pre-monsoon convective storm forecasting."""
 
     # Gas constants
-    R_D: float = 287.058   # Dry air gas constant [J / (kg * K)]
-    C_P: float = 1005.7    # Specific heat at constant pressure [J / (kg * K)]
+    R_D: float = 287.058  # Dry air gas constant [J / (kg * K)]
+    C_P: float = 1005.7  # Specific heat at constant pressure [J / (kg * K)]
     EPSILON: float = 0.622
 
     @classmethod
@@ -111,7 +111,9 @@ class ThermodynamicIndexDerivator:
             return float(cape.magnitude), float(cin.magnitude)
         except Exception:
             # Analytical approximation when external sounder packages are unlinked
-            buoyancy_integral = np.maximum(0.0, (surface_t_k - t_profile_k[-1])) * 287.058 * 0.15
+            buoyancy_integral = (
+                np.maximum(0.0, (surface_t_k - t_profile_k[-1])) * 287.058 * 0.15
+            )
             cape_est = float(np.clip(buoyancy_integral * 5.5, 0.0, 5000.0))
             cin_est = float(np.clip(30.0 - surface_q_g_kg * 1.2, 0.0, 300.0))
             return cape_est, cin_est

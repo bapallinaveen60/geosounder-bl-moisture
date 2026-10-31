@@ -11,7 +11,7 @@ Combines:
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import torch
 import torch.nn as nn
@@ -103,7 +103,9 @@ class CompositePhysicsLoss(nn.Module):
                 reduction="mean",
             )
         else:
-            loss_profile = F.huber_loss(q_pred, q_true, delta=self.huber_delta, reduction="mean")
+            loss_profile = F.huber_loss(
+                q_pred, q_true, delta=self.huber_delta, reduction="mean"
+            )
 
         # --- 2. Invariant GNSS Column Mass Conservation Loss ---
         if self.lambda_column > 0:

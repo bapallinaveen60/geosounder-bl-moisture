@@ -7,7 +7,7 @@ and generates target 3D specific humidity volumetric fields across 5 vertical pr
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 import torch
@@ -44,7 +44,9 @@ class ThermoBLDataset(Dataset):
         self.is_synthetic = is_synthetic
 
         # Standard pressure levels: [1000, 950, 925, 850, 700] hPa
-        self.pressure_levels = np.array([1000.0, 950.0, 925.0, 850.0, 700.0], dtype=np.float32)
+        self.pressure_levels = np.array(
+            [1000.0, 950.0, 925.0, 850.0, 700.0], dtype=np.float32
+        )
 
     def __len__(self) -> int:
         return self.num_samples
@@ -72,12 +74,19 @@ class ThermoBLDataset(Dataset):
             # Sounder brightness temps: 240 K to 310 K
             # GNSS PWV: 35 mm to 65 mm (maritime moist advection vs dry continental air)
             # Surface specific humidity: 14 to 22 g/kg at 1000 hPa, tapering to 3 to 6 g/kg at 700 hPa
-            input_seq = np.random.uniform(250.0, 310.0, size=(k, c, h, w)).astype(np.float32)
+            input_seq = np.random.uniform(250.0, 310.0, size=(k, c, h, w)).astype(
+                np.float32
+            )
 
             # Synthetic moisture profile: decrease monotonically with height
             base_q = np.linspace(18.0, 4.0, num=l).astype(np.float32)  # shape (5,)
-            spatial_grad = np.linspace(-3.0, 3.0, num=w, dtype=np.float32).reshape(1, 1, w)
-            target_q = np.broadcast_to(base_q.reshape(l, 1, 1), (l, h, w)).copy() + spatial_grad
+            spatial_grad = np.linspace(-3.0, 3.0, num=w, dtype=np.float32).reshape(
+                1, 1, w
+            )
+            target_q = (
+                np.broadcast_to(base_q.reshape(l, 1, 1), (l, h, w)).copy()
+                + spatial_grad
+            )
             target_q = np.maximum(0.5, target_q)
 
             # Random radiosonde collocation point
@@ -106,7 +115,9 @@ class ThermoBLDataset(Dataset):
                 "upper_pwv": torch.from_numpy(upper_pwv),
             }
 
-        raise NotImplementedError("Live HDF5/Zarr reader attached during pipeline assembly.")
+        raise NotImplementedError(
+            "Live HDF5/Zarr reader attached during pipeline assembly."
+        )
 
 
 def get_dataloader(

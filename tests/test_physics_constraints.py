@@ -1,10 +1,12 @@
 """Unit tests for physical constraints and loss functions."""
 
-import pytest
 import torch
 
 from src.losses.composite_loss import CompositePhysicsLoss
-from src.physics.mass_conservation import ColumnMassConservationLoss, integrate_boundary_layer_pwv
+from src.physics.mass_conservation import (
+    ColumnMassConservationLoss,
+    integrate_boundary_layer_pwv,
+)
 from src.physics.moisture_flux import MoistureFluxConvergenceOperator
 from src.physics.monotonicity import VerticalMonotonicityLoss
 
@@ -62,7 +64,9 @@ def test_moisture_flux_convergence_operator():
     mfc_uniform = mfc_op(q, u, v)
     assert mfc_uniform.shape == (1, 1, 32, 32)
     # Interior pixels must have zero flux divergence
-    assert torch.allclose(mfc_uniform[:, :, 5:-5, 5:-5], torch.zeros(1, 1, 22, 22), atol=1e-6)
+    assert torch.allclose(
+        mfc_uniform[:, :, 5:-5, 5:-5], torch.zeros(1, 1, 22, 22), atol=1e-6
+    )
 
 
 def test_composite_loss_end_to_end():

@@ -1,12 +1,11 @@
 """Unit tests for data ingestion, physics formulas, and spatial transformations."""
 
 import numpy as np
-import pytest
 
 from src.data.gnss_pwv_pipeline import GNSSPWVPipeline
+from src.data.radar_dwr_pipeline import RadarDWRPipeline
 from src.data.radiosonde_collocation import RadiosondeCollocator
 from src.data.topography_auxiliary import TopographyAuxiliaryEngine
-from src.data.radar_dwr_pipeline import RadarDWRPipeline
 
 
 def test_saastamoinen_zhd():
@@ -30,7 +29,9 @@ def test_askne_nordius_pi():
 def test_radiosonde_dewpoint_conversion():
     collocator = RadiosondeCollocator()
     # At Td = 20 C, p = 1000 hPa -> q is ~14.7 g/kg
-    q_calc = collocator.dewpoint_to_specific_humidity(td_celsius=20.0, pressure_hpa=1000.0)
+    q_calc = collocator.dewpoint_to_specific_humidity(
+        td_celsius=20.0, pressure_hpa=1000.0
+    )
     assert 13.5 < q_calc < 16.0
 
 

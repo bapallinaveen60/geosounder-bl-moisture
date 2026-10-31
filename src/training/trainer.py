@@ -7,10 +7,9 @@ gradient clipping, and composite physics loss tracking.
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Ensure project root is in sys.path
 root_dir = Path(__file__).resolve().parents[2]
@@ -18,11 +17,9 @@ if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
 import torch
-import torch.distributed as dist
-import torch.nn as nn
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.data import DataLoader, DistributedSampler
 import yaml
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader
 
 from src.data.dataset import ThermoBLDataset, get_dataloader
 from src.losses.composite_loss import CompositePhysicsLoss
@@ -33,7 +30,9 @@ from src.training.lr_scheduler import WarmupCosineScheduler
 class ThermoBLTrainer:
     """Trainer orchestrator for ThermoBL-Net."""
 
-    def __init__(self, config: Dict[str, Any], rank: int = 0, world_size: int = 1) -> None:
+    def __init__(
+        self, config: Dict[str, Any], rank: int = 0, world_size: int = 1
+    ) -> None:
         self.config = config
         self.rank = rank
         self.world_size = world_size
@@ -41,7 +40,9 @@ class ThermoBLTrainer:
 
         # Setup compute device
         if torch.cuda.is_available():
-            self.device = torch.device(f"cuda:{rank}" if self.is_distributed else "cuda")
+            self.device = torch.device(
+                f"cuda:{rank}" if self.is_distributed else "cuda"
+            )
         else:
             self.device = torch.device("cpu")
 
@@ -92,7 +93,10 @@ class ThermoBLTrainer:
         ).to(self.device)
 
         # Mixed Precision Scaler
-        use_amp = config["training"].get("mixed_precision", True) and torch.cuda.is_available()
+        use_amp = (
+            config["training"].get("mixed_precision", True)
+            and torch.cuda.is_available()
+        )
         self.device_type = "cuda" if torch.cuda.is_available() else "cpu"
         try:
             self.scaler = torch.amp.GradScaler(self.device_type, enabled=use_amp)
@@ -123,7 +127,9 @@ class ThermoBLTrainer:
 
             self.optimizer.zero_grad()
 
-            with torch.amp.autocast(device_type=self.device_type, enabled=self.scaler.is_enabled()):
+            with torch.amp.autocast(
+                device_type=self.device_type, enabled=self.scaler.is_enabled()
+            ):
                 q_pred = self.model(x_seq)
                 losses = self.criterion(
                     q_pred=q_pred,
@@ -178,7 +184,9 @@ class ThermoBLTrainer:
                 winds_uv = batch["winds_uv"].to(self.device)
                 upper_pwv = batch["upper_pwv"].to(self.device)
 
-                with torch.amp.autocast(device_type=self.device_type, enabled=self.scaler.is_enabled()):
+                with torch.amp.autocast(
+                    device_type=self.device_type, enabled=self.scaler.is_enabled()
+                ):
                     q_pred = self.model(x_seq)
                     losses = self.criterion(
                         q_pred=q_pred,
@@ -202,7 +210,9 @@ class ThermoBLTrainer:
         state = {
             "epoch": epoch,
             "model_state_dict": (
-                self.model.module.state_dict() if self.is_distributed else self.model.state_dict()
+                self.model.module.state_dict()
+                if self.is_distributed
+                else self.model.state_dict()
             ),
             "optimizer_state_dict": self.optimizer.state_dict(),
             "scheduler_state_dict": self.scheduler.state_dict(),
@@ -214,10 +224,14 @@ class ThermoBLTrainer:
             best_path = path.parent / "best_model.pt"
             torch.save(state, best_path)
 
-    def fit(self, train_loader: DataLoader, val_loader: DataLoader, epochs: int) -> None:
+    def fit(
+        self, train_loader: DataLoader, val_loader: DataLoader, epochs: int
+    ) -> None:
         """Run full multi-epoch optimization loop."""
         if self.rank == 0:
-            print(f"Starting ThermoBL-Net Training for {epochs} epochs on device: {self.device}")
+            print(
+                f"Starting ThermoBL-Net Training for {epochs} epochs on device: {self.device}"
+            )
 
         for epoch in range(1, epochs + 1):
             train_metrics = self.train_epoch(train_loader, epoch)
@@ -237,7 +251,9 @@ class ThermoBLTrainer:
                     f"{'[*] BEST' if is_best else ''}"
                 )
                 self.save_checkpoint(
-                    self.output_dir / "latest_checkpoint.pt", epoch=epoch, is_best=is_best
+                    self.output_dir / "latest_checkpoint.pt",
+                    epoch=epoch,
+                    is_best=is_best,
                 )
 
 
@@ -250,10 +266,14 @@ def main() -> None:
         train_cfg = yaml.safe_load(f)
 
     # Instantiate datasets for quick local test / dry-run
-    train_dataset = ThermoBLDataset(num_samples=8, grid_shape=(32, 32), is_synthetic=True)
+    train_dataset = ThermoBLDataset(
+        num_samples=8, grid_shape=(32, 32), is_synthetic=True
+    )
     val_dataset = ThermoBLDataset(num_samples=4, grid_shape=(32, 32), is_synthetic=True)
 
-    train_loader = get_dataloader(train_dataset, batch_size=2, shuffle=True, num_workers=0)
+    train_loader = get_dataloader(
+        train_dataset, batch_size=2, shuffle=True, num_workers=0
+    )
     val_loader = get_dataloader(val_dataset, batch_size=2, shuffle=False, num_workers=0)
 
     trainer = ThermoBLTrainer(config=train_cfg)

@@ -1,7 +1,6 @@
 """Unit tests for validation metrics and statistical scoring."""
 
 import numpy as np
-import pytest
 
 from src.evaluation.ci_nowcasting import ConvectiveInitiationNowcaster
 from src.evaluation.gnss_verification import GNSSColumnMassVerifier

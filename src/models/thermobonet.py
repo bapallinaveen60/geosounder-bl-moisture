@@ -7,7 +7,7 @@ humidity volumetric fields across [1000, 950, 925, 850, 700] hPa.
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
+from typing import Tuple
 
 import torch
 import torch.nn as nn
@@ -68,10 +68,14 @@ class MultiScaleVolumetricDecoder(nn.Module):
         super().__init__()
         self.out_levels = out_levels
 
-        self.conv1 = nn.Conv2d(in_channels, hidden_channels[0], kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(
+            in_channels, hidden_channels[0], kernel_size=3, padding=1
+        )
         self.norm1 = nn.GroupNorm(num_groups=8, num_channels=hidden_channels[0])
 
-        self.conv2 = nn.Conv2d(hidden_channels[0], hidden_channels[1], kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(
+            hidden_channels[0], hidden_channels[1], kernel_size=3, padding=1
+        )
         self.norm2 = nn.GroupNorm(num_groups=4, num_channels=hidden_channels[1])
 
         # Final projection to L vertical pressure levels

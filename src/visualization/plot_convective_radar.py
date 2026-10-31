@@ -45,7 +45,9 @@ def plot_radar_overlay_lead_time(
         cmap=radar_cmap,
         alpha=0.85,
     )
-    cb_radar = fig.colorbar(cf_radar, ax=ax, orientation="vertical", pad=0.03, aspect=25)
+    cb_radar = fig.colorbar(
+        cf_radar, ax=ax, orientation="vertical", pad=0.03, aspect=25
+    )
     cb_radar.set_label("IMD Doppler Radar MAX-Z Reflectivity [dBZ]", fontsize=12)
 
     # 2. Model Pre-Convective Moisture Convergence Alert Contours
@@ -102,7 +104,9 @@ def main() -> None:
 
     # Convective storm core over Kharagpur/Kolkata ~(22.6 N, 87.5 E)
     dist_sq = ((mesh_lat - 22.6) / 0.3) ** 2 + ((mesh_lon - 87.5) / 0.3) ** 2
-    radar_dbz = 52.0 * np.exp(-dist_sq) + np.random.uniform(5.0, 15.0, size=mesh_lat.shape)
+    radar_dbz = 52.0 * np.exp(-dist_sq) + np.random.uniform(
+        5.0, 15.0, size=mesh_lat.shape
+    )
 
     # Prior moisture flux convergence envelope
     mfc = 2.2e-4 * np.exp(-dist_sq * 0.7)

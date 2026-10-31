@@ -6,7 +6,7 @@ against IMD Doppler Weather Radar first-echo detections (>= 35 dBZ).
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 import numpy as np
 
@@ -38,7 +38,11 @@ class ConvectiveInitiationNowcaster:
 
         pod = hits / (hits + misses) if (hits + misses) > 0 else 0.0
         far = false_alarms / (hits + false_alarms) if (hits + false_alarms) > 0 else 0.0
-        csi = hits / (hits + misses + false_alarms) if (hits + misses + false_alarms) > 0 else 0.0
+        csi = (
+            hits / (hits + misses + false_alarms)
+            if (hits + misses + false_alarms) > 0
+            else 0.0
+        )
 
         return {
             "Hits": float(hits),
@@ -50,7 +54,9 @@ class ConvectiveInitiationNowcaster:
         }
 
     @staticmethod
-    def compute_lead_time_statistics(lead_times_minutes: List[float]) -> Dict[str, float]:
+    def compute_lead_time_statistics(
+        lead_times_minutes: List[float],
+    ) -> Dict[str, float]:
         """Compute summary statistics for convective initiation lead time distribution.
 
         Target: 75 to 120 minutes proactive warning horizon.

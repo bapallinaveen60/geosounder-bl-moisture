@@ -7,19 +7,18 @@ Machilipatnam, Hyderabad, Gopalpur) and detects the first occurrence of radar re
 
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 import numpy as np
-import yaml
 
 
 class RadarDWRPipeline:
     """Ingestion and Convective Initiation (CI) detection pipeline for IMD DWR data."""
 
     CI_THRESHOLD_DBZ: float = 35.0  # Radar reflectivity threshold for convective core
-    MAX_CI_ALTITUDE_KM: float = 3.0  # Convective initiation below freezing/melting layer
+    MAX_CI_ALTITUDE_KM: float = (
+        3.0  # Convective initiation below freezing/melting layer
+    )
 
     # Primary IMD Radar Stations coordinates (lat, lon)
     RADAR_STATIONS: Dict[str, Tuple[float, float]] = {
@@ -98,7 +97,9 @@ def main() -> None:
     ci_res = pipeline.detect_convective_initiation(dummy_radar)
     pooled = pipeline.spatial_box_pooling(ci_res["new_ci_mask"])
     print(f"Detected {ci_res['new_ci_mask'].sum()} CI pixels.")
-    print(f"Pooled to 20x20 km grid shape: {pooled.shape}, Active boxes: {pooled.sum()}")
+    print(
+        f"Pooled to 20x20 km grid shape: {pooled.shape}, Active boxes: {pooled.sum()}"
+    )
 
 
 if __name__ == "__main__":

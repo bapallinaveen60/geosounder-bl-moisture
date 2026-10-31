@@ -57,8 +57,19 @@ include = ["src*"]
 
 [tool.ruff]
 line-length = 100
-select = ["E", "F", "W", "I", "N", "B"]
-ignore = ["E501"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501",  # Line too long (handled by Black)
+    "E402",  # Module level import not at top of file
+    "E741",  # Ambiguous variable name
+    "F841",  # Local variable assigned but unused
+    "N812",  # Lowercase functional imported as non-lowercase F
+    "N817",  # CamelCase imported as acronym
+    "B905",  # zip without strict=
+    "B006",  # Mutable default argument
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

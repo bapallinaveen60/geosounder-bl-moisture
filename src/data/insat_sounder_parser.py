@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import h5py
 import numpy as np
@@ -81,13 +81,20 @@ class INSATSounderParser:
                 key = f"BT_C{ch:02d}"
                 if key in h5_file:
                     ir_channels.append(np.array(h5_file[key]))
-                elif "BrightnessTemperature" in h5_file and key in h5_file["BrightnessTemperature"]:
+                elif (
+                    "BrightnessTemperature" in h5_file
+                    and key in h5_file["BrightnessTemperature"]
+                ):
                     ir_channels.append(np.array(h5_file["BrightnessTemperature"][key]))
                 else:
                     # Provide realistic placeholder bounds if file is mock or missing channel
-                    ir_channels.append(np.full((300, 300), 285.0 - ch * 1.5, dtype=np.float32))
+                    ir_channels.append(
+                        np.full((300, 300), 285.0 - ch * 1.5, dtype=np.float32)
+                    )
 
-            data["ir_bands"] = np.stack(ir_channels, axis=0)  # Shape: (18, H_raw, W_raw)
+            data["ir_bands"] = np.stack(
+                ir_channels, axis=0
+            )  # Shape: (18, H_raw, W_raw)
 
             # Visible reflectance (Channel 19)
             if "VIS_Reflectance" in h5_file:
@@ -157,7 +164,9 @@ class INSATSounderParser:
 
         reprojected_channels = []
         for ch_idx in range(raw["ir_bands"].shape[0]):
-            gridded_ch = self.reproject_to_wgs84(raw["ir_bands"][ch_idx], source_lats, source_lons)
+            gridded_ch = self.reproject_to_wgs84(
+                raw["ir_bands"][ch_idx], source_lats, source_lons
+            )
             reprojected_channels.append(gridded_ch)
 
         gridded_vis = self.reproject_to_wgs84(raw["vis_band"], source_lats, source_lons)
@@ -178,7 +187,9 @@ class INSATSounderParser:
 
 def main() -> None:
     """CLI entry point for testing Sounder ingestion."""
-    parser = argparse.ArgumentParser(description="Parse and reproject INSAT Sounder HDF5")
+    parser = argparse.ArgumentParser(
+        description="Parse and reproject INSAT Sounder HDF5"
+    )
     parser.add_argument("--config", type=str, default="configs/data_config.yaml")
     args = parser.parse_args()
 
@@ -196,7 +207,9 @@ def main() -> None:
         grid_bounds=bounds,
         grid_res_deg=spatial["grid_resolution_deg"],
     )
-    print(f"INSAT Sounder Parser initialized for domain {bounds} at {spatial['grid_resolution_deg']} deg.")
+    print(
+        f"INSAT Sounder Parser initialized for domain {bounds} at {spatial['grid_resolution_deg']} deg."
+    )
     print(f"Target grid dimensions: {sounder_engine.grid_shape}")
 
 

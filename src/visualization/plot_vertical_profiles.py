@@ -56,7 +56,9 @@ def plot_vertical_cross_section(
         ax.invert_yaxis()  # Standard meteorological vertical coordinate: surface at bottom
         ax.grid(True, linestyle=":", alpha=0.5)
 
-    axes[-1].set_xlabel("Longitude [$^\\circ$E] (West-to-East Dryline Transect)", fontsize=11)
+    axes[-1].set_xlabel(
+        "Longitude [$^\\circ$E] (West-to-East Dryline Transect)", fontsize=11
+    )
 
     cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
     cb = fig.colorbar(cf, cax=cbar_ax)

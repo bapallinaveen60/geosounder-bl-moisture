@@ -12,7 +12,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Dict
 
 # Ensure project root is in sys.path
 root_dir = Path(__file__).resolve().parents[2]
@@ -33,9 +33,13 @@ def run_ablation_experiments(config_path: str = "configs/ablation_config.yaml") 
     with open("configs/train_config.yaml", "r", encoding="utf-8") as f:
         base_train_cfg = yaml.safe_load(f)
 
-    train_dataset = ThermoBLDataset(num_samples=8, grid_shape=(32, 32), is_synthetic=True)
+    train_dataset = ThermoBLDataset(
+        num_samples=8, grid_shape=(32, 32), is_synthetic=True
+    )
     val_dataset = ThermoBLDataset(num_samples=4, grid_shape=(32, 32), is_synthetic=True)
-    train_loader = get_dataloader(train_dataset, batch_size=2, shuffle=True, num_workers=0)
+    train_loader = get_dataloader(
+        train_dataset, batch_size=2, shuffle=True, num_workers=0
+    )
     val_loader = get_dataloader(val_dataset, batch_size=2, shuffle=False, num_workers=0)
 
     print("=" * 80)

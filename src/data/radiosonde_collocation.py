@@ -7,13 +7,9 @@ interpolates specific humidity profiles to standard boundary-layer levels
 
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
-import pandas as pd
-import yaml
 
 
 class RadiosondeCollocator:
@@ -92,7 +88,9 @@ class RadiosondeCollocator:
         target_log_p = np.log(np.array(self.TARGET_LEVELS_HPA, dtype=np.float64))
 
         # Linear interpolation in log(p)
-        interp_q = np.interp(target_log_p, log_p[::-1], q_sorted[::-1], left=np.nan, right=np.nan)
+        interp_q = np.interp(
+            target_log_p, log_p[::-1], q_sorted[::-1], left=np.nan, right=np.nan
+        )
         return interp_q.astype(np.float32)
 
     def find_collocated_pixels(
@@ -110,7 +108,9 @@ class RadiosondeCollocator:
         col_idx = int(np.argmin(lon_diff))
 
         # Check distance threshold
-        dist_sq = (grid_lats[row_idx] - station_lat) ** 2 + (grid_lons[col_idx] - station_lon) ** 2
+        dist_sq = (grid_lats[row_idx] - station_lat) ** 2 + (
+            grid_lons[col_idx] - station_lon
+        ) ** 2
         if np.sqrt(dist_sq) > self.spatial_radius_deg:
             # Beyond allowable spatial collocation tolerance
             return -1, -1

@@ -38,7 +38,9 @@ class MoistureFluxConvergenceOperator(nn.Module):
         self.register_buffer("kernel_x", sobel_x)
         self.register_buffer("kernel_y", sobel_y)
 
-    def forward(self, q_field: torch.Tensor, u_wind: torch.Tensor, v_wind: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self, q_field: torch.Tensor, u_wind: torch.Tensor, v_wind: torch.Tensor
+    ) -> torch.Tensor:
         """Compute instantaneous horizontal Moisture Flux Convergence (MFC).
 
         Args:

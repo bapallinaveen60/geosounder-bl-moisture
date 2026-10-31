@@ -7,12 +7,9 @@ Integrates hourly ERA5 Planetary Boundary Layer Height (BLH) and surface horizon
 
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
 from typing import Dict, Tuple
 
 import numpy as np
-import yaml
 
 
 class TopographyAuxiliaryEngine:
@@ -76,7 +73,9 @@ class TopographyAuxiliaryEngine:
         mesh_lon, mesh_lat = np.meshgrid(self.target_lons, self.target_lats)
 
         # Plateau simulation: Chhota Nagpur center ~(23.0 N, 85.5 E)
-        dist_cn = np.sqrt(((mesh_lat - 23.0) / 2.0) ** 2 + ((mesh_lon - 85.5) / 2.5) ** 2)
+        dist_cn = np.sqrt(
+            ((mesh_lat - 23.0) / 2.0) ** 2 + ((mesh_lon - 85.5) / 2.5) ** 2
+        )
         plateau = 650.0 * np.exp(-(dist_cn**2))
 
         # Coastal plain lowlands
@@ -91,7 +90,9 @@ def main() -> None:
     topo = engine.generate_synthetic_topography()
     print("Generated Topography & Morphometrics:")
     for key, arr in topo.items():
-        print(f"  {key:10s} -> shape: {arr.shape}, min: {arr.min():.2f}, max: {arr.max():.2f}")
+        print(
+            f"  {key:10s} -> shape: {arr.shape}, min: {arr.min():.2f}, max: {arr.max():.2f}"
+        )
 
 
 if __name__ == "__main__":

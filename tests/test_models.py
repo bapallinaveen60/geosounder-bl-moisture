@@ -1,12 +1,11 @@
 """Unit tests for ConvLSTM and ThermoBL-Net neural architectures."""
 
-import pytest
 import torch
 
-from src.models.convlstm import ConvLSTM, ConvLSTMCell
-from src.models.thermobonet import ThermoBLNet
 from src.models.baselines.point_mlp import PointRadianceMLP
 from src.models.baselines.unet_2d import StaticUNet2D
+from src.models.convlstm import ConvLSTM, ConvLSTMCell
+from src.models.thermobonet import ThermoBLNet
 
 
 def test_convlstm_cell_forward():

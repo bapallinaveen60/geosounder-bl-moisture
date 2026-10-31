@@ -7,7 +7,7 @@ moisture pooling, drylines, and orographic convergence zones.
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 import torch
 import torch.nn as nn
@@ -94,10 +94,20 @@ class ConvLSTMCell(nn.Module):
 
         if state is None:
             h_prev = torch.zeros(
-                batch_size, self.hidden_dim, height, width, device=x.device, dtype=x.dtype
+                batch_size,
+                self.hidden_dim,
+                height,
+                width,
+                device=x.device,
+                dtype=x.dtype,
             )
             c_prev = torch.zeros(
-                batch_size, self.hidden_dim, height, width, device=x.device, dtype=x.dtype
+                batch_size,
+                self.hidden_dim,
+                height,
+                width,
+                device=x.device,
+                dtype=x.dtype,
             )
         else:
             h_prev, c_prev = state
@@ -159,7 +169,9 @@ class ConvLSTM(nn.Module):
             )
 
         self.cell_list = nn.ModuleList(cell_list)
-        self.dropout = nn.Dropout2d(p=dropout_prob) if dropout_prob > 0 else nn.Identity()
+        self.dropout = (
+            nn.Dropout2d(p=dropout_prob) if dropout_prob > 0 else nn.Identity()
+        )
 
     def forward(
         self,
